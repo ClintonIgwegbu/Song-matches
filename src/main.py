@@ -3,7 +3,7 @@ from cmd import Cmd
 from song import Song
 from match_service import MatchService
 
-
+# TODO: Error catching here for bad input
 class Program(Cmd):
 
     song_dict = {}
@@ -24,20 +24,15 @@ class Program(Cmd):
         (song, num_top_rated_similar_songs) = inp.split(" ")
 
         # TODO: Uncomment the following two lines once your implementation is ready
-        # matches = MatchService.get_song_matches(song, int(num_top_rated_similar_songs))
-        # self._print_results(matches)
+        matches = MatchService.get_song_matches(song, int(num_top_rated_similar_songs), self.song_dict)
+        self._print_results(matches)
 
-    def _print_results(selg, result):
+    def _print_results(self, result):
         output = "result "
         output += "<null>" if not result else " ".join(
             [song.name for song in sorted(result, key=lambda x: x.name)]
         )
         print(output)
-
-    # Added by Clinton
-    # def do_result(self, inp):
-    #     print("Yo")
-    #     return True
 
 
 if __name__ == "__main__":
