@@ -1,15 +1,10 @@
 from cmd import Cmd
-
 from song import Song
 from match_service import MatchService
+from error_messages import Error
 
-# TODO: I should probably edit unit tests such that they do not call other functions that are being tested
-# TODO: Note that not all functions need to be tested
 # TODO: Add documentation to ALL methods in src and test files
-# TODO: The error messages distract from the rest of the file.
-# Consider moving them to a separate file?
-# Perhaps referenced by enums? or function parameters?
-# TODO: Error catching here for bad input
+# TODO: The number of try except blocks and if-statements in each method looks kinda messy. Perhaps make it more compact?
 class Program(Cmd):
 
     song_dict = {}
@@ -22,57 +17,57 @@ class Program(Cmd):
         try:
             (name, rating) = inp.split(" ")
         except:
-            print("You have not entered the song in the correct format. "
-                "Enter it using the format: song song_name rating")
+            print(Error.song_syntax)
             return
+
         try:
             self.song_dict[name] = Song(name, float(rating))
         except:
-            print("The rating must be a number. "
-                "Note that comma-separation cannot be used.")
+            if rating != '':
+                print(Error.invalid_rating)
+            else:
+                print(Error.song_syntax)
 
     def do_similar(self, inp):
         try:
             (song_a, song_b) = inp.split(" ")
         except:
-            print("You have not entered the command in the correct format. "
-                "Enter it using the format: similar song_a song_b")
+            print(Error.similarity_syntax)
             return
-        if song_a in self.song_dict and song_b in self.song_dict:
-            if song_a == song_b:
-                print("You entered the same song twice. Enter two different songs.")
-                return
+
+        if song_a in self.song_dict and song_b in self.song_dict and song_a != song_b:
             self.song_dict[song_a].add_similar_song(self.song_dict[song_b])
-            return
-        if song_a not in self.song_dict and song_b not in self.song_dict:
-            print("Neither of those songs have been registered yet. "
-                "Register a song using the format: song song_name rating")
+        elif song_a == '':
+            print(Error.similarity_syntax)
+        elif song_a == song_b:
+            print(Error.same_song)
+        elif song_a not in self.song_dict and song_b not in self.song_dict:
+            print(Error.similarity_neither_song_registered)
         elif song_a not in self.song_dict:
-            print("The first song has not been registered yet. "
-                "Register a song using the format: song song_name rating")
-        else:
-            print("The second song has not been registered yet. "
-                "Register a song using the format: song song_name rating")
+            print(Error.similarity_song_a_not_registered)
+        elif song_b not in self.song_dict:
+            print(Error.similarity_song_b_not_registered)
+
 
     def do_get_song_matches(self, inp):
         try:
             (name, num_top_rated_similar_songs) = inp.split(" ")
         except:
-            print("Your input is not in the correct format. "
-                "Get song matches using the format: get_song_matches song_name num_matches")
+            print(Error.matches_syntax)
             return
+
         try:
-            if int(num_top_rated_similar_songs) < 0:
-                print("You must enter a non-negative number.")
-                return
-            if name not in self.song_dict:
-                print("That song has not been registered yet. "
-                    "Register a song using the format: song song_name rating")
-                return
-            matches = MatchService.get_song_matches(self.song_dict[name], int(num_top_rated_similar_songs))
-            self._print_results(matches)
+            if not float(num_top_rated_similar_songs).is_integer():
+                print(Error.invalid_num_matches)
+            elif int(num_top_rated_similar_songs) < 0:
+                print(Error.invalid_num_matches)
+            elif name not in self.song_dict:
+                print(Error.matches_song_not_registered)
+            else:
+                matches = MatchService.get_song_matches(self.song_dict[name], int(num_top_rated_similar_songs))
+                self._print_results(matches)
         except:
-            print("The input you entered is incorrect. Try again.")
+            print(Error.matches_syntax)
 
     def _print_results(self, result):
         output = "result "
