@@ -25,7 +25,8 @@ class TestSong(unittest.TestCase):
             self.assertEqual(len(self.song_a.similar_songs), 1)
         with self.subTest('Try to add song b to graph again'):
             self.song_a.add_similar_song(self.song_b)
-            self.assertEqual(len(self.song_a.similar_songs), 1)  # Same song should not be added to graph twice
+            # Same song should not be added to graph twice
+            self.assertEqual(len(self.song_a.similar_songs), 1)
         with self.subTest('Add song c to graph'):
             self.song_a.add_similar_song(self.song_c)
             self.assertEqual(len(self.song_a.similar_songs), 2)

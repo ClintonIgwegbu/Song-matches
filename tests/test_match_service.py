@@ -32,7 +32,8 @@ class TestMatchService(unittest.TestCase):
 
     def test_dfs_similarity_graph(self):
         # Grouped components of graph are {a,b,c,d}; {e,f}
-        song_a, song_b, song_c, song_d, song_e, song_f, _ = self.setup_songs(1.1, 3.3, 2.5, 4.7, 5.7, 3.6, 0)
+        song_a, song_b, song_c, song_d, song_e, song_f, _ = self.setup_songs(
+            1.1, 3.3, 2.5, 4.7, 5.7, 3.6, 0)
         song_a.add_similar_song(song_b)
         song_a.add_similar_song(song_c)
         song_b.add_similar_song(song_d)
@@ -42,47 +43,55 @@ class TestMatchService(unittest.TestCase):
 
         # Check which nodes can be visited, starting from song_a.
         num_top_rated_similar_songs, top_rated_songs, visited = self.reset_test_dfs(song_a)
-        MatchService._dfs_similarity_graph(song_a, top_rated_songs, num_top_rated_similar_songs, visited)
+        MatchService._dfs_similarity_graph(
+            song_a, top_rated_songs, num_top_rated_similar_songs, visited)
         self.assert_visited([True, True, True, True, False, False], songs, visited)
 
         # Check which nodes can be visited, starting from song_e.
         num_top_rated_similar_songs, top_rated_songs, visited = self.reset_test_dfs(song_e)
-        MatchService._dfs_similarity_graph(song_e, top_rated_songs, num_top_rated_similar_songs, visited)
+        MatchService._dfs_similarity_graph(
+            song_e, top_rated_songs, num_top_rated_similar_songs, visited)
         self.assert_visited([False, False, False, False, True, True], songs, visited)
 
         # Grouped components of graph are now {a,b,c,d,e,f}.
         # Check which nodes can be visited, starting from song_e.
         song_f.add_similar_song(song_b)
         num_top_rated_similar_songs, top_rated_songs, visited = self.reset_test_dfs(song_e)
-        MatchService._dfs_similarity_graph(song_e, top_rated_songs, num_top_rated_similar_songs, visited)
+        MatchService._dfs_similarity_graph(
+            song_e, top_rated_songs, num_top_rated_similar_songs, visited)
         self.assert_visited([True, True, True, True, True, True], songs, visited)
 
     def test_update_top_rated(self):
-        song_a, song_b, song_c, song_d, song_e, song_f, song_g = self.setup_songs(1, 2, 3, 0, 1.1, 2.1, 3.1)
+        song_a, song_b, song_c, song_d, song_e, song_f, song_g = self.setup_songs(
+            1, 2, 3, 0, 1.1, 2.1, 3.1)
         num_top_rated_similar_songs = 3
         top_rated_songs_before = [song_a, song_b, song_c]
 
         # Update with song_d
         top_rated_songs_after = top_rated_songs_before[:]
-        MatchService._update_top_rated(song_d, top_rated_songs_after, num_top_rated_similar_songs)
+        MatchService._update_top_rated(
+            song_d, top_rated_songs_after, num_top_rated_similar_songs)
         with self.subTest():
             self.assertEqual(top_rated_songs_after, [song_a, song_b, song_c])
 
         # Update with song_e
         top_rated_songs_after = top_rated_songs_before[:]
-        MatchService._update_top_rated(song_e, top_rated_songs_after, num_top_rated_similar_songs)
+        MatchService._update_top_rated(
+            song_e, top_rated_songs_after, num_top_rated_similar_songs)
         with self.subTest():
             self.assertEqual(top_rated_songs_after, [song_e, song_b, song_c])
 
         # Update with song_f
         top_rated_songs_after = top_rated_songs_before[:]
-        MatchService._update_top_rated(song_f, top_rated_songs_after, num_top_rated_similar_songs)
+        MatchService._update_top_rated(
+            song_f, top_rated_songs_after, num_top_rated_similar_songs)
         with self.subTest():
             self.assertEqual(top_rated_songs_after, [song_b, song_f, song_c])
 
         # Update with song_g
         top_rated_songs_after = top_rated_songs_before[:]
-        MatchService._update_top_rated(song_g, top_rated_songs_after, num_top_rated_similar_songs)
+        MatchService._update_top_rated(
+            song_g, top_rated_songs_after, num_top_rated_similar_songs)
         with self.subTest():
             self.assertEqual(top_rated_songs_after, [song_b, song_c, song_g])
 
@@ -109,12 +118,14 @@ class TestMatchService(unittest.TestCase):
         test_values = [0, 4]
         for num_top_rated_similar_songs in test_values:
             top_rated_songs = [0] * num_top_rated_similar_songs
-            MatchService._remove_empty_spaces(top_rated_songs, num_top_rated_similar_songs)
+            MatchService._remove_empty_spaces(
+                top_rated_songs, num_top_rated_similar_songs)
             with self.subTest(top_rated_songs=top_rated_songs):
                 self.assertEqual(top_rated_songs, [])
 
         top_rated_songs = [0, 0, 'a']
         num_top_rated_similar_songs = len(top_rated_songs)
-        MatchService._remove_empty_spaces(top_rated_songs, num_top_rated_similar_songs)
+        MatchService._remove_empty_spaces(
+            top_rated_songs, num_top_rated_similar_songs)
         with self.subTest(top_rated_songs=[0, 0, 'a']):
             self.assertEqual(top_rated_songs, ['a'])

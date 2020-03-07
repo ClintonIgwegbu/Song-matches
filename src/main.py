@@ -49,7 +49,8 @@ class Program(Cmd):
             return
 
         if song_a in self.song_dict and song_b in self.song_dict and song_a != song_b:
-            self.song_dict[song_a].add_similar_song(self.song_dict[song_b])  # Valid input
+            self.song_dict[song_a].add_similar_song(
+                self.song_dict[song_b])  # Valid input
         elif song_a == '':
             print(Error.similarity_syntax)
         elif song_a == song_b:
@@ -83,7 +84,8 @@ class Program(Cmd):
                 print(Error.matches_song_not_registered)
             else:
                 # Valid input
-                matches = MatchService.get_song_matches(self.song_dict[name], int(num_top_rated_similar_songs))
+                matches = MatchService.get_song_matches(
+                    self.song_dict[name], int(num_top_rated_similar_songs))
                 self._print_results(matches)
         except Exception:
             print(Error.matches_syntax)

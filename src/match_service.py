@@ -14,13 +14,15 @@ class MatchService:
         if num_top_rated_similar_songs == 0:
             return []
 
-        visited = {}  # Dictionary of visited nodes for depth-firstt traversal of similarity graph
+        visited = {}  # Dictionary of visited nodes for dfs of similarity graph
         visited[song.name] = True
 
         # Fetch list of top rated songs
         top_rated_songs = [0]*num_top_rated_similar_songs
-        MatchService._dfs_similarity_graph(song, top_rated_songs, num_top_rated_similar_songs, visited)
-        MatchService._remove_empty_spaces(top_rated_songs, num_top_rated_similar_songs)
+        MatchService._dfs_similarity_graph(
+            song, top_rated_songs, num_top_rated_similar_songs, visited)
+        MatchService._remove_empty_spaces(
+            top_rated_songs, num_top_rated_similar_songs)
 
         return top_rated_songs
 
@@ -38,8 +40,10 @@ class MatchService:
         for similar_song in song.similar_songs:
             if similar_song.name not in visited:
                 visited[similar_song.name] = True
-                MatchService._update_top_rated(similar_song, top_rated_songs, num_top_rated_similar_songs)
-                MatchService._dfs_similarity_graph(similar_song, top_rated_songs, num_top_rated_similar_songs, visited)
+                MatchService._update_top_rated(
+                    similar_song, top_rated_songs, num_top_rated_similar_songs)
+                MatchService._dfs_similarity_graph(
+                    similar_song, top_rated_songs, num_top_rated_similar_songs, visited)
 
     @staticmethod
     def _update_top_rated(song, top_rated_songs, num_top_rated_similar_songs):
@@ -61,7 +65,8 @@ class MatchService:
     @staticmethod
     def _shift_and_update(song, top_rated_songs, index):
         """
-        Update rank of songs currently in list of top rated songs, and insert new song in appropriate rank.
+        Update rank of songs currently in list of top rated songs,
+        and insert new song in appropriate rank.
 
         :param song: Current song
         :param top_rated_songs: List of the top rated songs that are similar to song
