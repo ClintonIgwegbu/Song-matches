@@ -27,3 +27,7 @@ class Error:
 
     matches_song_not_registered = ("That song has not been registered yet.\n"
                                    "Register a song using the format: song song_name rating")
+
+    song_already_registered = ("You have already registered that song.\n"
+                               "You cannot change its rating.")
+                                # "You can edit its rating using format: edit_rating song_name new_rating")

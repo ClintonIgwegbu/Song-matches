@@ -12,12 +12,12 @@ class TestSong(unittest.TestCase):
         self.song_c = Song('c', 3)
         self.song_d = Song('d', 4)
 
-    def test_similarity_already_noted(self):
+    def test_find_song(self):
         self.song_a.similar_songs.append(self.song_b)
         self.song_a.similar_songs.append(self.song_c)
-        self.assertTrue(self.song_a._similarity_already_noted(self.song_b))
-        self.assertTrue(self.song_a._similarity_already_noted(self.song_c))
-        self.assertFalse(self.song_a._similarity_already_noted(self.song_d))
+        self.assertNotEqual(self.song_a._find_song(self.song_b), -1)
+        self.assertNotEqual(self.song_a._find_song(self.song_c), -1)
+        self.assertEqual(self.song_a._find_song(self.song_d), -1)
 
     def test_add_similar_song(self):
         with self.subTest('Add song b to graph'):

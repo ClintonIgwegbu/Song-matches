@@ -35,12 +35,13 @@ class TestMain(unittest.TestCase):
 
     def test_do_song(self):
         # NOTE: Negative ratings are allowed in this test
-        inputs = ['A', ' A ', 'A 2', 'A A', 'A 2 3',
-                  'A     2', 'A 0', 'A -3', ' ', '  ', '   ']
+        inputs = ['C', ' D ', 'E 2', 'F F', 'G 2 3',
+                  'H     2', 'I 0', 'J -3', ' ', '  ', '   ', 'A A']
         expected_messages = [Error.song_syntax, Error.song_syntax, None,
                              Error.invalid_rating, Error.song_syntax,
                              Error.song_syntax, None, None, Error.song_syntax,
-                             Error.song_syntax, Error.song_syntax]
+                             Error.song_syntax, Error.song_syntax,
+                             Error.song_already_registered]
 
         self.assert_correct_print(
             self.program.do_song, inputs, expected_messages)

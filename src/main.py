@@ -1,3 +1,13 @@
+# TODO: Currently an attempt to edit a song rating breaks the whole program. Fix this
+# There must be a way to remove/update similar songs for each song that references a changed song
+# Or perhaps create a new method in main called update, use to update song ratings such that repeated calls to song command
+# don't do anything and tell the user that they already registered the song - to update the rating do this
+# TODO: Perhaps another method to remove a song completely from the graph
+# TODO: Perhaps another method to reset i.e. erase all similarities
+# TODO: Perhaps another method to remove specific similarities
+# TODO: We must undergeez to get a place on this internship! Think of further extensions
+# TODO: Perhaps move some of the error-catching here to the functions being called?
+
 from cmd import Cmd
 from song import Song
 from match_service import MatchService
@@ -27,8 +37,15 @@ class Program(Cmd):
             print(Error.song_syntax)
             return
 
+        # TODO: Either allow song ratings to be changed or don't and forget about extensions
         try:
-            self.song_dict[name] = Song(name, float(rating))
+            song_already_seen = name in self.song_dict
+            if song_already_seen:
+                # self.song_dict[name].rating = rating
+                print(Error.song_already_registered)
+            else:
+                self.song_dict[name] = Song(name, float(rating))
+
         except Exception:
             if rating != '':
                 print(Error.invalid_rating)
@@ -89,6 +106,29 @@ class Program(Cmd):
                 self._print_results(matches)
         except Exception:
             print(Error.matches_syntax)
+
+    # def do_edit_rating(self, inp):
+    #     """Edit the rating of a song."""
+
+    #     (name, rating) = inp.split(" ")
+    #     self.song_dict[name] = Song(name, float(rating))
+    #     update_similarity_graph()
+
+    # def do_remove_song(self, inp):
+    #     """Remove a song from the 'database'."""
+    #     name = inp.split(" ")
+    #     self.song_dict[name].remove_from_other_songs_similarity()
+    #     del self.song_dict[name]
+
+    # def do_remove_similarity(self, inp):
+    #     """Delete record of similarity between two songs."""
+    #     (song_a, song_b) = inp.split(" ")
+    #     self.song_dict[song_a].remove_song_similarity(song_b)
+
+    # def do_reset_similarity(self, inp):
+    #     """Delete records of all similarities."""
+    #     for name in self.song_dict:
+    #         self.song_dict[name].remove_all_similarities()
 
     def _print_results(self, result):
         """Print the results of do_get_song_matches to the console."""
