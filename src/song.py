@@ -8,12 +8,14 @@ class Song:
         self.rating = rating
         self.similar_songs = []
 
-    # Used in bisect.insort to compare songs. Uppercase names come before lowercase names.
     def __lt__(self, other):
         return self.name < other.name
 
     def __eq__(self, other):
-        return self.name == other.name
+        try:
+            return self.name == other.name
+        except:
+            return False
 
     # TODO Prevent similar song from being added multiple times
     def add_similar_song(self, song):

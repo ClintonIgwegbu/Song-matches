@@ -3,6 +3,8 @@ from cmd import Cmd
 from song import Song
 from match_service import MatchService
 
+# TODO: I should probably edit unit tests such that they do not call other functions that are being tested
+# TODO: Note that not all functions need to be tested
 # TODO: Add documentation to ALL methods in src and test files
 # TODO: The error messages distract from the rest of the file.
 # Consider moving them to a separate file?
@@ -54,7 +56,7 @@ class Program(Cmd):
 
     def do_get_song_matches(self, inp):
         try:
-            (song, num_top_rated_similar_songs) = inp.split(" ")
+            (name, num_top_rated_similar_songs) = inp.split(" ")
         except:
             print("Your input is not in the correct format. "
                 "Get song matches using the format: get_song_matches song_name num_matches")
@@ -63,11 +65,11 @@ class Program(Cmd):
             if int(num_top_rated_similar_songs) < 0:
                 print("You must enter a non-negative number.")
                 return
-            if song not in self.song_dict:
+            if name not in self.song_dict:
                 print("That song has not been registered yet. "
                     "Register a song using the format: song song_name rating")
                 return
-            matches = MatchService.get_song_matches(song, int(num_top_rated_similar_songs), self.song_dict)
+            matches = MatchService.get_song_matches(self.song_dict[name], int(num_top_rated_similar_songs))
             self._print_results(matches)
         except:
             print("The input you entered is incorrect. Try again.")
