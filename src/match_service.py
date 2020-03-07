@@ -1,37 +1,39 @@
 class MatchService:
+    """A utility for returning the highest rated songs that are similar to a specified song."""
 
-    # TODO What is the difference between @staticmethod and @classmethod?
     @staticmethod
     def get_song_matches(song, num_top_rated_similar_songs):
         """
+        Get highest rated songs that are similar to a given song.
+
         :param song: Current Song
         :param num_top_rated_similar_songs: the maximum number of song matches to return
-        :return: List of top rated similar songs
+        :return top_rated_songs: List of top rated similar songs
         """
 
-        # No similar songs
         if num_top_rated_similar_songs == 0:
             return []
 
-        visited = {}  # Create a dictionary of visited nodes and add song to it
-        visited[song.name] = True  # Dictionary is used because of its contant time access
+        visited = {}  # Dictionary of visited nodes for depth-firstt traversal of similarity graph
+        visited[song.name] = True
 
+        # Fetch list of top rated songs
         top_rated_songs = [0]*num_top_rated_similar_songs
-        # traverse graph starting from song
         MatchService._dfs_similarity_graph(song, top_rated_songs, num_top_rated_similar_songs, visited)
         MatchService._remove_empty_spaces(top_rated_songs, num_top_rated_similar_songs)
 
         return top_rated_songs
 
-    # TODO Consider putting some of below methods in another file e.g. perhaps dfs under song?
-    # TODO How to indicate that top_rated_songs is updated in some of the functions below, in the documentation?
     @staticmethod
     def _dfs_similarity_graph(song, top_rated_songs, num_top_rated_similar_songs, visited):
         """
+        Perform a depth-first traversal of similarity graph, while updating list of top rated songs
+        and dictionary of visited nodes.
+
         :param song: Current Song
         :param top_rated_songs: List of the top rated songs that are similar to song
         :param num_top_rated_similar_songs: the maximum number of song matches to return
-        :visited: Dictionary of 'visited' nodes in the graph traversal
+        :param visited: Dictionary of 'visited' nodes in the graph traversal
         """
         for similar_song in song.similar_songs:
             if similar_song.name not in visited:
@@ -42,6 +44,8 @@ class MatchService:
     @staticmethod
     def _update_top_rated(song, top_rated_songs, num_top_rated_similar_songs):
         """
+        Update list of top rated songs given param song.
+
         :param song: Current song
         :param top_rated_songs: List of the top rated songs that are similar to song
         :param num_top_rated_similar_songs: the maximum number of song matches to return
@@ -57,6 +61,8 @@ class MatchService:
     @staticmethod
     def _shift_and_update(song, top_rated_songs, index):
         """
+        Update rank of songs currently in list of top rated songs, and insert new song in appropriate rank.
+
         :param song: Current song
         :param top_rated_songs: List of the top rated songs that are similar to song
         :param index: Index where song should replace value in top_rated_songs
@@ -70,6 +76,8 @@ class MatchService:
     @staticmethod
     def _remove_empty_spaces(top_rated_songs, num_top_rated_similar_songs):
         """
+        If allowance made in list of top rated songs is too large, remove empty slots.
+
         :param top_rated_songs: List of the top rated songs that are similar to song
         :param num_top_rated_similar_songs: the maximum number of song matches to return
         """

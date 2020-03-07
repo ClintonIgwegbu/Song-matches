@@ -1,10 +1,12 @@
-# import sys
 import unittest
 from song import Song
+
 
 class TestSong(unittest.TestCase):
 
     def setUp(self):
+        """Initialise four songs before each test."""
+
         self.song_a = Song('a', 1)
         self.song_b = Song('b', 2)
         self.song_c = Song('c', 3)
@@ -27,4 +29,3 @@ class TestSong(unittest.TestCase):
         with self.subTest('Add song c to graph'):
             self.song_a.add_similar_song(self.song_c)
             self.assertEqual(len(self.song_a.similar_songs), 2)
-   
