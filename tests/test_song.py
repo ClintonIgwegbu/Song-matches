@@ -1,5 +1,6 @@
+# import sys
 import unittest
-from src.song import Song
+from song import Song
 
 class TestSong(unittest.TestCase):
 
@@ -12,9 +13,9 @@ class TestSong(unittest.TestCase):
     def test_similarity_already_noted(self):
         self.song_a.similar_songs.append(self.song_b)
         self.song_a.similar_songs.append(self.song_c)
-        self.assertTrue(self.song_a.similarity_already_noted(self.song_b))
-        self.assertTrue(self.song_a.similarity_already_noted(self.song_c))
-        self.assertFalse(self.song_a.similarity_already_noted(self.song_d))
+        self.assertTrue(self.song_a._similarity_already_noted(self.song_b))
+        self.assertTrue(self.song_a._similarity_already_noted(self.song_c))
+        self.assertFalse(self.song_a._similarity_already_noted(self.song_d))
 
     def test_add_similar_song(self):
         with self.subTest('Add song b to graph'):
