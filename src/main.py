@@ -7,6 +7,12 @@
 # TODO: Perhaps another method to remove specific similarities
 # TODO: We must undergeez to get a place on this internship! Think of further extensions
 # TODO: Perhaps move some of the error-catching here to the functions being called?
+# TODO: Perhaps use sphinx to create intelligent documentation with links?
+# TODO: When enter is hit twice in a row the program fucks up. Is it right to have return statements? The last function that was called
+# keeps being called and it gives the wrong output
+# TODO: Take advantage of help in cmd
+# TODO: Read through cmd to check that everything is covered and there will be no other weird bugs
+# TODO: If user types something weird, tell them how to get help. Help is ESSENTIAL to production-ready code.
 
 from cmd import Cmd
 from song import Song
@@ -26,7 +32,7 @@ class Program(Cmd):
 
     def do_song(self, inp):
         """
-        Allows user to register a song into the 'database'.
+        Allows song to be registered in the 'database'.
 
         Song is registered using format: song song_name rating
         """
@@ -42,6 +48,10 @@ class Program(Cmd):
             song_already_seen = name in self.song_dict
             if song_already_seen:
                 # self.song_dict[name].rating = rating
+                # for song in self.song_dict[name].similar_songs[0].similar_songs:
+                #     print("Song name is {0}".format(song.name))
+                #     print("Song rating is {0}".format(song.rating))
+                #     print()
                 print(Error.song_already_registered)
             else:
                 self.song_dict[name] = Song(name, float(rating))
@@ -54,9 +64,9 @@ class Program(Cmd):
 
     def do_similar(self, inp):
         """
-        Allows user to register similarities between songs in the 'database'.
+        Allows similarities between songs to be registered in the 'database'.
 
-        Register similarity using format: similarity song_a_name song_b_name
+        Register similarity using format: similar song_a_name song_b_name
         """
 
         try:
@@ -64,7 +74,6 @@ class Program(Cmd):
         except Exception:
             print(Error.similarity_syntax)
             return
-
         if song_a in self.song_dict and song_b in self.song_dict and song_a != song_b:
             self.song_dict[song_a].add_similar_song(
                 self.song_dict[song_b])  # Valid input
@@ -81,7 +90,7 @@ class Program(Cmd):
 
     def do_get_song_matches(self, inp):
         """
-        Allows user to get the highest rated songs similar to any song in the database.
+        Allows the highest rated songs, similar to any song in the database, to be fetched.
 
         Use format: get_song_matches song_name num_top_rated_similar_songs
         """
@@ -91,7 +100,6 @@ class Program(Cmd):
         except Exception:
             print(Error.matches_syntax)
             return
-
         try:
             if not float(num_top_rated_similar_songs).is_integer():
                 print(Error.invalid_num_matches)
@@ -130,6 +138,21 @@ class Program(Cmd):
     #     for name in self.song_dict:
     #         self.song_dict[name].remove_all_similarities()
 
+    def emptyline(self):
+        """
+        Called when an empty line is entered in response to the prompt.
+
+        Overrides Cmd.emptyline.
+        """
+
+    def default(self, line):
+        """Called on an input line when the command prefix is not recognized.
+
+        Overrides Cmd.default.
+
+        """
+        print(Error.invalid_command)
+
     def _print_results(self, result):
         """Print the results of do_get_song_matches to the console."""
 
@@ -138,6 +161,7 @@ class Program(Cmd):
             [song.name for song in sorted(result, key=lambda x: x.name)]
         )
         print(output)
+
 
 
 if __name__ == "__main__":
