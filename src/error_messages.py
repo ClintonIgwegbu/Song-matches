@@ -39,6 +39,11 @@ class Error:
                                    "Enter '?' or 'help' for more information.\n")
 
     song_already_registered = ("\nYou have already registered that song.\n"
-                               "You cannot change its rating.\n"
                                "Enter '?' or 'help' for more information.\n")
-                                # "You can edit its rating using format: edit_rating song_name new_rating")
+
+class Notice:
+    """Notifications for the user."""
+
+    @staticmethod
+    def rating_updated(name, rating):
+        return ("\n{0}'s rating is now {1}.\n".format(name, rating))

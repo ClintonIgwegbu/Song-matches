@@ -1,23 +1,7 @@
-# TODO: Currently an attempt to edit a song rating breaks the whole program. Fix this
-# There must be a way to remove/update similar songs for each song that references a changed song
-# Or perhaps create a new method in main called update, use to update song ratings such that repeated calls to song command
-# don't do anything and tell the user that they already registered the song - to update the rating do this
-# TODO: Perhaps another method to remove a song completely from the graph
-# TODO: Perhaps another method to reset i.e. erase all similarities
-# TODO: Perhaps another method to remove specific similarities
-# TODO: We must undergeez to get a place on this internship! Think of further extensions
-# TODO: Perhaps move some of the error-catching here to the functions being called?
-# TODO: Perhaps use sphinx to create intelligent documentation with links?
-# TODO: When enter is hit twice in a row the program fucks up. Is it right to have return statements? The last function that was called
-# keeps being called and it gives the wrong output
-# TODO: Take advantage of help in cmd
-# TODO: Read through cmd to check that everything is covered and there will be no other weird bugs
-# TODO: If user types something weird, tell them how to get help. Help is ESSENTIAL to production-ready code.
-
 from cmd import Cmd
 from song import Song
 from match_service import MatchService
-from error_messages import Error
+from error_messages import Error, Notice
 
 
 class Program(Cmd):
@@ -35,6 +19,7 @@ class Program(Cmd):
         Allows song to be registered in the 'database'.
 
         Song is registered using format: song song_name rating
+        Existing song's rating may also be updated using same format.
         """
 
         try:
@@ -43,16 +28,11 @@ class Program(Cmd):
             print(Error.song_syntax)
             return
 
-        # TODO: Either allow song ratings to be changed or don't and forget about extensions
         try:
             song_already_seen = name in self.song_dict
             if song_already_seen:
-                # self.song_dict[name].rating = rating
-                # for song in self.song_dict[name].similar_songs[0].similar_songs:
-                #     print("Song name is {0}".format(song.name))
-                #     print("Song rating is {0}".format(song.rating))
-                #     print()
-                print(Error.song_already_registered)
+                self.song_dict[name].rating = float(rating)
+                print(Notice.rating_updated(name, rating))
             else:
                 self.song_dict[name] = Song(name, float(rating))
 
@@ -115,28 +95,11 @@ class Program(Cmd):
         except Exception:
             print(Error.matches_syntax)
 
-    # def do_edit_rating(self, inp):
-    #     """Edit the rating of a song."""
-
-    #     (name, rating) = inp.split(" ")
-    #     self.song_dict[name] = Song(name, float(rating))
-    #     update_similarity_graph()
-
-    # def do_remove_song(self, inp):
-    #     """Remove a song from the 'database'."""
-    #     name = inp.split(" ")
-    #     self.song_dict[name].remove_from_other_songs_similarity()
-    #     del self.song_dict[name]
-
-    # def do_remove_similarity(self, inp):
-    #     """Delete record of similarity between two songs."""
-    #     (song_a, song_b) = inp.split(" ")
-    #     self.song_dict[song_a].remove_song_similarity(song_b)
-
-    # def do_reset_similarity(self, inp):
-    #     """Delete records of all similarities."""
-    #     for name in self.song_dict:
-    #         self.song_dict[name].remove_all_similarities()
+    def do_show(self, inp):
+        """Show songs and their ratings."""
+        for name in self.song_dict:
+            print("Title: {0}\nRating: {1}\n".format(
+                name, self.song_dict[name].rating))
 
     def emptyline(self):
         """
@@ -161,7 +124,6 @@ class Program(Cmd):
             [song.name for song in sorted(result, key=lambda x: x.name)]
         )
         print(output)
-
 
 
 if __name__ == "__main__":

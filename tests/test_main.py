@@ -1,6 +1,6 @@
 import unittest
 from main import Program
-from error_messages import Error
+from error_messages import Error, Notice
 from song import Song
 from mock import patch, call
 
@@ -36,12 +36,12 @@ class TestMain(unittest.TestCase):
     def test_do_song(self):
         # NOTE: Negative ratings are allowed in this test
         inputs = ['C', ' D ', 'E 2', 'F F', 'G 2 3',
-                  'H     2', 'I 0', 'J -3', ' ', '  ', '   ', 'A A']
+                  'H     2', 'I 0', 'J -3', ' ', '  ', '   ', 'A A', 'A 1']
         expected_messages = [Error.song_syntax, Error.song_syntax, None,
                              Error.invalid_rating, Error.song_syntax,
                              Error.song_syntax, None, None, Error.song_syntax,
                              Error.song_syntax, Error.song_syntax,
-                             Error.song_already_registered]
+                             Error.invalid_rating, Notice.rating_updated('A', 1)]
 
         self.assert_correct_print(
             self.program.do_song, inputs, expected_messages)
