@@ -4,6 +4,9 @@ from song import Song
 from match_service import MatchService
 from error_messages import Error, Notice
 
+# NOTE: The recursion depth limit of 1000 (default) imposes a constraint on
+# the number of similarities between songs. Though this limit still likely
+# allows the inclusion of many thousands of songs into the 'similarity graph'.
 
 class Program(Cmd):
 
