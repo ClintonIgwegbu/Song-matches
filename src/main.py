@@ -1,3 +1,4 @@
+import sys
 from cmd import Cmd
 from song import Song
 from match_service import MatchService
@@ -62,11 +63,11 @@ class Program(Cmd):
         elif song_a == song_b:
             print(Error.same_song)
         elif song_a not in self.song_dict and song_b not in self.song_dict:
-            print(Error.similarity_neither_song_registered)
+            print(Error.neither_song_registered)
         elif song_a not in self.song_dict:
-            print(Error.similarity_song_a_not_registered)
+            print(Error.song_a_not_registered)
         elif song_b not in self.song_dict:
-            print(Error.similarity_song_b_not_registered)
+            print(Error.song_b_not_registered)
 
     def do_get_song_matches(self, inp):
         """
@@ -98,7 +99,7 @@ class Program(Cmd):
     def do_track_entries(self, inp):
         """
         Track registered songs and similarities.
-        
+
         Show up-to-date entries using format: track_entries
         """
 
@@ -107,6 +108,78 @@ class Program(Cmd):
             print("Title: {0}\nRating: {1}\nSimilar songs:{2}\n".format(
                 name, self.song_dict[name].rating,
                 [song.name for song in self.song_dict[name].similar_songs]))
+
+    def do_remove_similar(self, inp):
+        """
+        Allows similarities between songs to be removed from the 'database'.
+
+        Remove similarity using format: remove_similar song_a_name song_b_name
+        """
+
+        try:
+            (song_a, song_b) = inp.split(" ")
+        except Exception:
+            print(Error.remove_similar_syntax)
+            return
+        if song_a in self.song_dict and song_b in self.song_dict and song_a != song_b:
+            self.song_dict[song_a].remove_similar_song(
+                self.song_dict[song_b])  # Valid input
+        elif song_a == '':
+            print(Error.remove_similar_syntax)
+        elif song_a == song_b:
+            print(Error.same_song)
+        elif song_a not in self.song_dict and song_b not in self.song_dict:
+            print(Error.neither_song_registered)
+        elif song_a not in self.song_dict:
+            print(Error.song_a_not_registered)
+        elif song_b not in self.song_dict:
+            print(Error.song_b_not_registered)
+
+    def do_remove_all_similarities(self, inp):
+        """
+        Deletes similarities between all songs.
+
+        Delete all similarities using the format: remove_similar song_a_name song_b_name
+        """
+
+        proceed = self._confirm_response(Notice.confirm_delete_all_sim)
+
+        if not proceed:
+            return
+        for name in self.song_dict:
+            self.song_dict[name].similar_songs = []
+
+    def _confirm_response(self, question, default="no"):
+        """Ask a yes/no question via input() and return their answer.
+
+        "question" is a string that is presented to the user.
+        "default" is the presumed answer if the user just hits <Enter>.
+            It must be "yes" (the default), "no" or None (meaning
+            an answer is required of the user).
+
+        The "answer" return value is True for "yes" or False for "no".
+        """
+
+        valid = {"yes": True, "y": True, "no": False, "n": False}
+        if default is None:
+            prompt = " [y/n] "
+        elif default == "yes":
+            prompt = " [Y/n] "
+        elif default == "no":
+            prompt = " [y/N] "
+        else:
+            raise ValueError("invalid default answer: '%s'" % default)
+
+        while True:
+            sys.stdout.write(question + prompt)
+            choice = input().lower()
+            if default is not None and choice == '':
+                return valid[default]
+            elif choice in valid:
+                return valid[choice]
+            else:
+                sys.stdout.write("Please respond with 'yes' or 'no' "
+                                 "(or 'y' or 'n').\n")
 
     def emptyline(self):
         """

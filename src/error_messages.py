@@ -16,17 +16,17 @@ class Error:
 
     same_song = ("\nYou entered the same song twice. Enter two different songs.\n")
 
-    similarity_neither_song_registered = ("\nNeither song has been registered yet.\n"
-                                          "Register a song using the format: song song_name rating\n"
-                                          "Enter '?' or 'help' for more information.\n")
+    neither_song_registered = ("\nNeither song has been registered yet.\n"
+                               "Register a song using the format: song song_name rating\n"
+                               "Enter '?' or 'help' for more information.\n")
 
-    similarity_song_a_not_registered = ("\nThe first song has not been registered yet.\n"
-                                        "Register a song using the format: song song_name rating\n"
-                                        "Enter '?' or 'help' for more information.\n")
+    song_a_not_registered = ("\nThe first song has not been registered yet.\n"
+                             "Register a song using the format: song song_name rating\n"
+                             "Enter '?' or 'help' for more information.\n")
 
-    similarity_song_b_not_registered = ("\nThe second song has not been registered yet.\n"
-                                        "Register a song using the format: song song_name rating\n"
-                                        "Enter '?' or 'help' for more information.\n")
+    song_b_not_registered = ("\nThe second song has not been registered yet.\n"
+                             "Register a song using the format: song song_name rating\n"
+                             "Enter '?' or 'help' for more information.\n")
 
     matches_syntax = ("\nYou have not entered the command in the correct format.\n"
                       "Get song matches using the format: get_song_matches song_name num_matches\n"
@@ -41,8 +41,15 @@ class Error:
     song_already_registered = ("\nYou have already registered that song.\n"
                                "Enter '?' or 'help' for more information.\n")
 
+    remove_similar_syntax = ("\nYou have not entered the command in the correct format.\n"
+                             "Remove song similarities using the format: remove_similar song_a song_b\n"
+                             "Enter '?' or 'help' for more information.\n")
+
+
 class Notice:
     """Notifications for the user."""
+
+    confirm_delete_all_sim = ("\nAre you sure you would like to delete all similarities? (Y/N)")
 
     @staticmethod
     def rating_updated(name, rating):

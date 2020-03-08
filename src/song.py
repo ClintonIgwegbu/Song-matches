@@ -26,11 +26,25 @@ class Song:
             insort(self.similar_songs, song)
             insort(song.similar_songs, self)
 
+    def remove_similar_song(self, song):
+        """Remove song from self.similar_songs."""
+        song_index = self._find_song(song)
+        if song_index == -1:
+            return
+        self_index = self.similar_songs[song_index]._find_song(self)
+        self.similar_songs[song_index].similar_songs.pop(self_index)
+        self.similar_songs.pop(song_index)
+
     def _similarity_already_noted(self, song):
         """Return boolean indicating if song has already been inserted in self.similar_songs."""
 
+        return self._find_song(song) != -1
+
+    def _find_song(self, song):
+        """Return index of song in self.similar_songs."""
+
         i = bisect_left(self.similar_songs, song)
         if i != len(self.similar_songs) and self.similar_songs[i] == song:
-            return True
+            return i
         else:
-            return False
+            return -1

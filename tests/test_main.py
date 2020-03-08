@@ -14,6 +14,7 @@ class TestMain(unittest.TestCase):
         self.program.song_dict = {}
         self.program.song_dict['A'] = Song('A', 1)
         self.program.song_dict['B'] = Song('B', 2)
+        self.program.song_dict['Z'] = Song('Z', 3)
 
     @patch('sys.stdout')
     @patch('main.Program._print_results')
@@ -50,9 +51,9 @@ class TestMain(unittest.TestCase):
         inputs = ['A A', 'A B', 'A    B', ' ', '  ', 'C D', 'A C', 'C A']
         expected_messages = [Error.same_song, None, Error.similarity_syntax,
                              Error.similarity_syntax, Error.similarity_syntax,
-                             Error.similarity_neither_song_registered,
-                             Error.similarity_song_b_not_registered,
-                             Error.similarity_song_a_not_registered]
+                             Error.neither_song_registered,
+                             Error.song_b_not_registered,
+                             Error.song_a_not_registered]
 
         self.assert_correct_print(
             self.program.do_similar, inputs, expected_messages)
@@ -69,3 +70,14 @@ class TestMain(unittest.TestCase):
 
         self.assert_correct_print(
             self.program.do_get_song_matches, inputs, expected_messages)
+
+    @patch('main.Program._confirm_response')
+    def test_remove_all_similarities(self, mock_confirmation):
+        mock_confirmation.return_value = True
+        self.program.song_dict['A'].add_similar_song(self.program.song_dict['B'])
+        self.program.song_dict['A'].add_similar_song(self.program.song_dict['Z'])
+        self.program.song_dict['B'].add_similar_song(self.program.song_dict['Z'])
+        self.program.do_remove_all_similarities('')
+        self.assertEqual(self.program.song_dict['A'].similar_songs, [])
+        self.assertEqual(self.program.song_dict['B'].similar_songs, [])
+        self.assertEqual(self.program.song_dict['Z'].similar_songs, [])
