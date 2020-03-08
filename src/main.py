@@ -167,6 +167,22 @@ class Program(Cmd):
             self.song_dict[name].remove_similar_song(self.song_dict[inp])
         del self.song_dict[inp]
 
+    def emptyline(self):
+        """
+        Called when an empty line is entered in response to the prompt.
+
+        Overrides Cmd.emptyline.
+        """
+        # Do nothing
+
+    def default(self, line):
+        """Called on an input line when the command prefix is not recognized.
+
+        Overrides Cmd.default.
+
+        """
+        print(Error.invalid_command)
+
     def _confirm_response(self, question, default="no"):
         """Ask a yes/no question via input() and return their answer.
 
@@ -198,22 +214,6 @@ class Program(Cmd):
             else:
                 sys.stdout.write("Please respond with 'yes' or 'no' "
                                  "(or 'y' or 'n').\n")
-
-    def emptyline(self):
-        """
-        Called when an empty line is entered in response to the prompt.
-
-        Overrides Cmd.emptyline.
-        """
-        # Do nothing
-
-    def default(self, line):
-        """Called on an input line when the command prefix is not recognized.
-
-        Overrides Cmd.default.
-
-        """
-        print(Error.invalid_command)
 
     def _print_results(self, result):
         """Print the results of do_get_song_matches to the console."""
