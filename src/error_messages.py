@@ -45,12 +45,20 @@ class Error:
                              "Remove song similarities using the format: remove_similar song_a song_b\n"
                              "Enter '?' or 'help' for more information.\n")
 
+    remove_song_syntax = ("\nNo song has been removed.\n"
+                          "Ensure that the correct syntax was followed and that the song has been registered.\n"
+                          "Enter '?' or 'help' for more information.\n")
+
 
 class Notice:
     """Notifications for the user."""
 
-    confirm_delete_all_sim = ("\nAre you sure you would like to delete all similarities? (Y/N)")
+    confirm_delete_all_sim = ("\nAre you sure you would like to delete all similarities? (Y/N)\n")
 
     @staticmethod
     def rating_updated(name, rating):
         return ("\n{0}'s rating is now {1}.\n".format(name, rating))
+
+    @staticmethod
+    def confirm_delete_song(name):
+        return ("\nAre you sure you would like to delete {0}?\n".format(name))

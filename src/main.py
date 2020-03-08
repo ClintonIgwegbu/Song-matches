@@ -149,6 +149,24 @@ class Program(Cmd):
         for name in self.song_dict:
             self.song_dict[name].similar_songs = []
 
+    def do_remove_song(self, inp):
+        """
+        Deletes a song from the record.
+
+        Delete song using format: remove_song song_name
+        """
+
+        if inp not in self.song_dict:
+            print(Error.remove_song_syntax)
+            return
+
+        proceed = self._confirm_response(Notice.confirm_delete_song(inp))
+        if not proceed:
+            return
+        for name in self.song_dict:
+            self.song_dict[name].remove_similar_song(self.song_dict[inp])
+        del self.song_dict[inp]
+
     def _confirm_response(self, question, default="no"):
         """Ask a yes/no question via input() and return their answer.
 

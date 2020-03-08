@@ -15,6 +15,9 @@ class TestMain(unittest.TestCase):
         self.program.song_dict['A'] = Song('A', 1)
         self.program.song_dict['B'] = Song('B', 2)
         self.program.song_dict['Z'] = Song('Z', 3)
+        self.song_a = self.program.song_dict['A']
+        self.song_b = self.program.song_dict['B']
+        self.song_z = self.program.song_dict['Z']
 
     @patch('sys.stdout')
     @patch('main.Program._print_results')
@@ -72,12 +75,30 @@ class TestMain(unittest.TestCase):
             self.program.do_get_song_matches, inputs, expected_messages)
 
     @patch('main.Program._confirm_response')
-    def test_remove_all_similarities(self, mock_confirmation):
+    def test_do_remove_all_similarities(self, mock_confirmation):
         mock_confirmation.return_value = True
-        self.program.song_dict['A'].add_similar_song(self.program.song_dict['B'])
-        self.program.song_dict['A'].add_similar_song(self.program.song_dict['Z'])
-        self.program.song_dict['B'].add_similar_song(self.program.song_dict['Z'])
+        self.song_a.add_similar_song(self.song_b)
+        self.song_a.add_similar_song(self.song_z)
+        self.song_b.add_similar_song(self.song_z)
         self.program.do_remove_all_similarities('')
-        self.assertEqual(self.program.song_dict['A'].similar_songs, [])
-        self.assertEqual(self.program.song_dict['B'].similar_songs, [])
-        self.assertEqual(self.program.song_dict['Z'].similar_songs, [])
+        self.assertEqual(self.song_a.similar_songs, [])
+        self.assertEqual(self.song_b.similar_songs, [])
+        self.assertEqual(self.song_z.similar_songs, [])
+
+    @patch('main.Program._confirm_response')
+    def test_do_remove_song(self, mock_confirmation):
+        mock_confirmation.return_value = True
+        self.song_a.add_similar_song(self.song_b)
+        self.song_a.add_similar_song(self.song_z)
+        self.song_b.add_similar_song(self.song_z)
+        self.program.do_remove_song(self.song_a.name)
+        with self.subTest('Check removal from song_dict'):
+            self.assertEqual(list(self.program.song_dict.keys()),
+                             [self.song_b.name, self.song_z.name])
+        with self.subTest('Check similarity references removed'):
+            sim_song_names_b = [
+                song.name for song in self.song_b.similar_songs]
+            sim_song_names_z = [
+                song.name for song in self.song_z.similar_songs]
+        self.assertEqual(sim_song_names_b, [self.song_z.name])
+        self.assertEqual(sim_song_names_z, [self.song_b.name])
