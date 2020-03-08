@@ -95,11 +95,18 @@ class Program(Cmd):
         except Exception:
             print(Error.matches_syntax)
 
-    def do_show(self, inp):
-        """Show songs and their ratings."""
+    def do_track_entries(self, inp):
+        """
+        Track registered songs and similarities.
+        
+        Show up-to-date entries using format: track_entries
+        """
+
+        print()  # Print newline
         for name in self.song_dict:
-            print("Title: {0}\nRating: {1}\n".format(
-                name, self.song_dict[name].rating))
+            print("Title: {0}\nRating: {1}\nSimilar songs:{2}\n".format(
+                name, self.song_dict[name].rating,
+                [song.name for song in self.song_dict[name].similar_songs]))
 
     def emptyline(self):
         """
@@ -107,6 +114,7 @@ class Program(Cmd):
 
         Overrides Cmd.emptyline.
         """
+        # Do nothing
 
     def default(self, line):
         """Called on an input line when the command prefix is not recognized.
